@@ -5,7 +5,13 @@ const ControlType = {
   DUMMY: 'dummy'
 };
 
+const DamageCause = {
+  COLLISION: 'collision',
+  STUCK: 'stuck',
+};
+
 Object.freeze(ControlType); // We want this is be immutable like an enum
+Object.freeze(DamageCause);
 
 class Car {
   constructor(x, y, width, height, controlType = ControlType.DUMMY, maxSpeed = 3) {
@@ -14,12 +20,16 @@ class Car {
     this.width = width;
     this.height = height;
 
+    this.controlType = controlType;
     this.speed = 0;
+    this.avgSpeed = 0;
     this.acceleration = 0.2;
     this.maxSpeed = maxSpeed;
     this.friction = 0.05;
     this.angle = 0;
     this.damaged = false;
+    this.damageCause = null;
+    this.updateCycles = 0;
 
     this.useBrain = controlType === ControlType.ML;
 
@@ -34,9 +44,21 @@ class Car {
 
   update(roadBorders, traffic) {
     if (!this.damaged) {
+      this.updateCycles++;
       this.#move();
       this.polygon = this.#createPolygon();
-      this.damaged = this.#assessDamage(roadBorders, traffic);
+      if (this.#assessDamage(roadBorders, traffic)) {
+        this.damaged = true;
+        this.damageCause = DamageCause.COLLISION;
+      }
+      this.avgSpeed = (this.avgSpeed * (this.updateCycles - 1) + Math.abs(this.speed)) / this.updateCycles; // Approx. running average
+      if ((this.updateCycles % 500 === 0) && (this.controlType !== ControlType.DUMMY)) { // Every 500 cycles, we make sure cars are not stuck. Dummy cars are not affected
+        console.log("Average speed: " + this.avgSpeed);
+        if (this.avgSpeed < (this.maxSpeed * 0.8)) {
+          this.damaged = true;
+          this.damageCause = DamageCause.STUCK;
+        }
+      }
     }
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
@@ -134,7 +156,15 @@ class Car {
 
   draw(ctx, color, drawSensor = false) {
     if (this.damaged) {
-      ctx.fillStyle = '#596475';
+      switch (this.damageCause) {
+        default:
+        case DamageCause.COLLISION:
+          ctx.fillStyle = '#596475';
+          break;
+        case DamageCause.STUCK:
+          ctx.fillStyle = '#cf8600';
+          break;
+      }
     } else {
       ctx.fillStyle = color;
     }
