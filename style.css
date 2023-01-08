@@ -16,12 +16,26 @@ html { /* Set defaults that are inherited by children */
 #verticalButtons {
   display: flex;
   flex-direction: column;
+  padding: 10px;
+}
+
+#saveText {
+  font-size: 16px;
+  text-align: center;
+  margin: 4px auto;
+}
+
+.saveInfo {
+  font-size: 16px;
+  text-align: center;
+  margin: 4px auto;
 }
 
 .generationInfo {
   padding: 5px;
   text-align: center;
   font-size: 1rem;
+  text-align: center;
 }
 
 button {
@@ -43,4 +57,48 @@ button:hover {
 
 #carCanvas {
   background-color: lightgray;
+}
+
+.carsRemainingText {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Settings */
+#settingsContainer {
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  max-width: 450px;
+  margin-right: 100px;
+  left: 0;
+  top: 0;
+}
+
+h1 {
+  margin: 5px auto;
+}
+
+h2 {
+  margin: 5px auto;
+}
+
+#settingsContainer p {
+  font-size: 12px;
+  margin: 8px auto;
+}
+
+#settingsContainer p.note {
+  font-size: 16px;
+  margin: 8px auto;
+}
+
+#resetSettingsBtn {
+  font-size: 16px;
+  padding: 5px;
 }

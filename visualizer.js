@@ -90,7 +90,7 @@
               ctx.textBaseline="middle";
               ctx.fillStyle="black";
               ctx.strokeStyle="white";
-              ctx.font=(nodeRadius*1.5)+"px Arial";
+              ctx.font=(nodeRadius*1.5)+"px Arial, Helvetica, Sans-Serif";
               ctx.fillText(outputLabels[i],x,top+nodeRadius*0.1);
               ctx.lineWidth=0.5;
               ctx.strokeText(outputLabels[i],x,top+nodeRadius*0.1);

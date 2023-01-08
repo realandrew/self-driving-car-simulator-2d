@@ -8,7 +8,7 @@ const networkCtx = networkCanvas.getContext("2d");
 
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
-const N = 1000;
+let N = 1000;
 let mutationRate = 0.5;
 
 let genNum = 0;
@@ -16,8 +16,53 @@ let cars = [];
 let bestCar;
 let traffic = [];
 
-nextGeneration();
-animate();
+// Document elements
+let carCountInput;
+let carCountVal;
+let totalCarCount;
+let mutationRateInput;
+let mutationRateVal;
+let hasSaveEle;
+let carsRemainingEle;
+
+window.addEventListener('load', () => {
+  carCountInput = document.getElementById('carCount');
+  carCountVal = document.getElementById('carCountVal');
+  totalCarCount = document.getElementById('totalCarCount');
+  mutationRateInput = document.getElementById('mutationRate');
+  mutationRateVal = document.getElementById('mutationRateVal');
+  hasSaveEle = document.getElementById('hasSave');
+  carsRemainingEle = document.getElementById('carsRemaining');
+
+  carCountInput.addEventListener('input', updateCarCount);
+  mutationRateInput.addEventListener('input', updateMutationRate);
+
+  checkSave();
+  if (localStorage.getItem("carCount") !== null) {
+    carCountInput.value = localStorage.getItem("carCount");
+  }
+  updateCarCount();
+  if (localStorage.getItem("mutationRate") !== null) {
+    mutationRateInput.value = localStorage.getItem("mutationRate");
+  }
+  updateMutationRate();
+
+  nextGeneration();
+  animate();
+});
+
+function updateCarCount(e) {
+  N = carCountInput.value;
+  localStorage.setItem("carCount", N);
+  carCountVal.innerText = N;
+  totalCarCount.innerText = N;
+}
+
+function updateMutationRate(e) {
+  mutationRate = mutationRateInput.value / 100;
+  localStorage.setItem("mutationRate", mutationRate * 100);
+  mutationRateVal.innerText = Number.parseInt((mutationRate * 100)).toFixed(0) + '%';
+}
 
 function nextGeneration() {
   genNum++;
@@ -47,10 +92,31 @@ function nextGeneration() {
 
 function save() {
   localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
+  checkSave();
+}
+
+function checkSave() {
+  hasSaveEle.innerText = hasSave();
+}
+
+function hasSave() {
+  if (localStorage.getItem("bestBrain") === null) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 function discardSave() {
   localStorage.removeItem("bestBrain");
+  checkSave();
+}
+
+function resetSettings() {
+  carCountInput.value = null;
+  mutationRateInput.value = null;
+  localStorage.removeItem("carCount");
+  localStorage.removeItem("mutationRate");
 }
 
 function generateCars(n) {
@@ -62,6 +128,7 @@ function generateCars(n) {
 }
 
 function animate(time) {
+  carsRemainingEle.innerText = cars.filter(c => !c.damaged).length;
   if (cars.filter(c => !c.damaged).length === 0) {
     save();
     nextGeneration();

@@ -7,11 +7,57 @@
   <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
+  <noscript>
+    <h1>Your browser is not supported!</h1>
+    <p>
+      This website requires a modern browser with JavaScript enabled in order to function.
+      Please update your browser or download a <a href="https://browser-update.org/browsers.html" target="_blank">modern browser</a> to use this site.
+    </p>
+  </noscript>
+  <div id="settingsContainer">
+    <h1>Self-driving Car Simulator</h1>
+    <h2>Settings</h2>
+    <p class="note"><strong>Note</strong>: Setting changes only take affect upon next generation start or page refresh.</p>
+    <p class="note"><strong>Note</strong>: The performance of this is throttled if the browser tab is not in focus. 
+      This can cause a slow motion blurry look. Simply click the tab to resume full performance.</p>
+    <button onclick="resetSettings()" id="resetSettingsBtn">Reset Settings</button>
+    <hr>
+    <div class="inputContainer">
+      <div>
+        <label for="carCount">Cars Per Generation (<span id="carCountVal"></span>):</label>
+        <input type="number" id="carCount" value="1000" placeholder="1000">
+      </div>
+      <p>This is the number of cars trained at the same time. A higher number may increase training speed but decreases your computer speed.</p>
+    </div>
+    <hr>
+    <div class="inputContainer">
+      <div>
+        <label for="mutationRate">Mutation Rate (<span id="mutationRateVal"></span>):</label>
+        <input type="number" id="mutationRate" value="25" placeholder="25" min="1" max="100" step="1">
+      </div>
+      <p>This is how much mutation is applied to the AI weights each generation. When the next generation starts, 
+        the AI model is based on the winner of the last generation with a % randonmness (mutation) added. This controls that randomness %.
+        There's a sweet spot to be found between 0% and 100% that offers the fastest training speed.</p>
+    </div>
+  </div>
   <canvas id="carCanvas"></canvas>
   <div id="verticalButtons">
     <p class="generationInfo">Gen <span id="genNum">0</span></p>
+    <p class="carsRemainingText">
+      <strong><span id="carsRemaining"></span></strong> /
+      <br>
+      <span id="totalCarCount"></span>
+      <br>
+      remaining
+    </p>
+    <p id="saveText">Save:</p>
     <button onclick="save()">💾</button>
     <button onclick="discardSave()">🗑</button>
+    <p class="saveInfo">
+      Saved:
+      <br>
+      <strong><span id="hasSave"></span></strong>
+    </p>
   </div>
   <canvas id="networkCanvas"></canvas>
   <script src="visualizer.js"></script>
